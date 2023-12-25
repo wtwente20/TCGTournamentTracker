@@ -16,10 +16,10 @@ export class LoginComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
   onLogin() {
-    this.http.post('http://localhost:5000/users/login', this.user)
+    this.http.post<any>('http://localhost:5000/users/login', this.user)
       .subscribe(response => {
-        console.log(response);
-        this.router.navigate(['/']); // Redirect to home or dashboard page
+        localStorage.setItem('token', response.token);
+        this.router.navigate(['/dashboard']);
       }, error => {
         console.error(error);
         // Handle error

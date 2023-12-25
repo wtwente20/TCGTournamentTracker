@@ -1,3 +1,4 @@
 backend/.env
 backend/combined.log
 backend/error.log
+frontend/src/environments/environment.ts
