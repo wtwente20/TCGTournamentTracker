@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const morgan = require('morgan');
 const cors = require('cors');
 const User = require('./models/user');
+const TournamentEntry = require('./models/tournamentEntry');
+require('./models/associations');
 require("dotenv").config();
 
 const app = express();
