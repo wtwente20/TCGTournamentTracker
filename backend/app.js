@@ -12,7 +12,7 @@ const app = express();
 
 // Route definitions go here, filler added for template
 // const tournamentRoutes = require("./routes/tournamentRoutes");
-// const userRoutes = require("./routes/userRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 app.use(cors({
   origin: 'http://localhost:4200',
@@ -33,7 +33,7 @@ const assertDatabaseConnection = async () => {
 
 // Use routes here
 // app.use("/tournaments", tournamentRoutes);
-// app.use("/users", userRoutes);
+app.use("/users", userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
