@@ -1,5 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { TournamentService } from '../services/tournament.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,42 +10,42 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
   entries: any[] = [];
-  newEntry: any = {}; // Define the structure based on your model
+  newEntry: any = {};
   userId: string | null = '';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private authService: AuthService,
+    private tournamentService: TournamentService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.userId = this.getUserIdFromToken();
-    if (this.userId) {
+    if (this.authService.isLoggedIn()) {
       this.loadTournamentEntries();
+    } else {
+      this.router.navigate(['/login']);
     }
   }
 
-  getUserIdFromToken(): string | null {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
-
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const decodedToken = JSON.parse(window.atob(base64));
-
-    return decodedToken.userId; // Adjust based on your token payload structure
-  }
-
   addEntry() {
-    // Add the userId to the newEntry object
-    this.newEntry.userId = this.userId;
-    this.http.post('http://localhost:5000/tournaments/add', this.newEntry)
+    this.newEntry.userId = this.userId; // Set userId if required
+    this.tournamentService.addTournamentEntry(this.newEntry)
       .subscribe(response => {
         this.entries.push(response);
-        this.newEntry = {}; // Reset the form
+        this.newEntry = {};
+      }, error => {
+        console.error(error);
       });
   }
 
   loadTournamentEntries() {
-    this.http.get<any[]>(`http://localhost:5000/tournaments/${this.userId}`)
-      .subscribe(entries => this.entries = entries,
-        error => console.error(error));
+    if (this.userId) {
+      this.tournamentService.getTournamentEntries(this.userId)
+        .subscribe(entries => {
+          this.entries = entries;
+        }, error => {
+          console.error(error);
+        });
+    }
   }
 }

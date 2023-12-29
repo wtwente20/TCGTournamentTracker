@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from '../services/user.service'; // Adjust the import path as needed
 
 @Component({
   selector: 'app-login',
@@ -13,12 +13,12 @@ export class LoginComponent {
     password: ''
   };
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   onLogin() {
-    this.http.post<any>('http://localhost:5000/users/login', this.user)
+    this.userService.loginUser(this.user.username, this.user.password)
       .subscribe(response => {
-        localStorage.setItem('token', response.token);
+        localStorage.setItem('token', response.token); // Assuming the token is returned in the response
         this.router.navigate(['/dashboard']);
       }, error => {
         console.error(error);

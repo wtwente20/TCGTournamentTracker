@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const logger = require('../config/logger'); // Make sure you have a logger configured
+const logger = require('../config/logger');
 
 const authenticate = (req, res, next) => {
   const tokenHeader = req.headers['authorization'];
@@ -19,7 +19,7 @@ const authenticate = (req, res, next) => {
       return res.status(401).send({ message: 'Invalid Token!' });
     }
     logger.info('Decoded User:', decoded);
-    req.user = { id: decoded.userId }; // Adjust according to your payload
+    req.user = { id: decoded.userId };
     next();
   });
 };
